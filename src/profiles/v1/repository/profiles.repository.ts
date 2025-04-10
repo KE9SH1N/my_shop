@@ -12,11 +12,13 @@ export class ProfilesRepository extends Repository<Profile> {
     super(Profile, dataSource.createEntityManager());
   }
 
+  //create profile
   async createProfile(createProfileDto: CreateProfileDto): Promise<Profile> {
     const profile = this.create(createProfileDto);
     return this.save(profile);
   }
 
+  //find profile by id
   async findProfileById(id: string): Promise<Profile> {
     const profileData = await this.findOne({
       where: { id },
@@ -25,6 +27,7 @@ export class ProfilesRepository extends Repository<Profile> {
     return profileData;
   }
 
+  //find all profile
   async findAllProfile(paginationDto: PaginationDto) {
     const { page = 1, limit = 10 } = paginationDto;
 
@@ -42,10 +45,16 @@ export class ProfilesRepository extends Repository<Profile> {
     id: string,
     updateProfileDto: UpdateProfileDto,
   ): Promise<Profile> {
-    await this.update({ id }, updateProfileDto);
+    // Find the existing profile by id
+    const profileToUpdate = await this.findOne({ where: { id } });
 
-    const updatedProfile = await this.findOneOrFail({ where: { id } });
+    if (!profileToUpdate) {
+      throw new Error(`Profile with ID ${id} not found`);
+    }
 
-    return updatedProfile;
+    const updatedProfile = this.merge(profileToUpdate, updateProfileDto);
+
+    // Save the updated profile
+    return this.save(updatedProfile);
   }
 }

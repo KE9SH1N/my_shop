@@ -24,8 +24,6 @@ export class RolesController {
 
   @Post('/new')
   @Version('1')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin')
   async create(@Body() createRoleDto: CreateRoleDto): Promise<Role> {
     return await this.rolesService.create(createRoleDto);
   }

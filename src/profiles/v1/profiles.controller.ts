@@ -7,9 +7,12 @@ import {
   Patch,
   Post,
   Query,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
   Version,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { Auth } from 'src/auth/entities/auth.entity';
 import { JwtAuthGuard } from 'src/auth/util/jwt-auth.guard';
 import { PaginationDto } from 'src/common/shared/dto/pagination.dto';
@@ -61,17 +64,50 @@ export class ProfilesController {
     };
   }
 
+  // @Patch(':id')
+  // @UseGuards(JwtAuthGuard)
+  // @Version('1')
+  // @UseInterceptors(FileInterceptor('profile_image'))
+  // async update(
+  //   @Param('id') id: string,
+  //   @Body() updateProfileDto: UpdateProfileDto,
+  //   @UploadedFile() profileImage: Express.Multer.File,
+  // ): Promise<{ statusCode: number; message: string; data: Profile }> {
+  //   const updatedProfileDetails = await this.profilesService.updateProfileById(
+  //     id,
+  //     updateProfileDto,
+  //   );
+  //   if (profileImage) {
+  //     updateProfileDto.profile_image = profileImage.filename;
+  //   }
+  //   updatedProfileDetails.profile_image = `http://localhost:3000/uploads/${profileImage.filename}`;
+  //   return {
+  //     statusCode: 200,
+  //     message: 'Profile updated successfully',
+  //     data: updatedProfileDetails,
+  //   };
+  // }
+
   @Patch(':id')
   @UseGuards(JwtAuthGuard)
   @Version('1')
+  @UseInterceptors(FileInterceptor('profile_image'))
   async update(
     @Param('id') id: string,
     @Body() updateProfileDto: UpdateProfileDto,
+    @UploadedFile() profileImage: Express.Multer.File,
   ): Promise<{ statusCode: number; message: string; data: Profile }> {
+    if (profileImage) {
+      updateProfileDto.profile_image = profileImage.filename;
+    }
+
     const updatedProfileDetails = await this.profilesService.updateProfileById(
       id,
       updateProfileDto,
     );
+
+    updatedProfileDetails.profile_image = `http://localhost:3001/uploads/${profileImage.filename}`;
+
     return {
       statusCode: 200,
       message: 'Profile updated successfully',

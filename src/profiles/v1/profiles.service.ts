@@ -47,10 +47,11 @@ export class ProfilesService {
     id: string,
     updateProfileDto: UpdateProfileDto,
   ): Promise<Profile> {
-    const updatedProfile = await this.profilesRepository.updateProfileById(
-      id,
-      updateProfileDto,
-    );
+    const updatedProfile = await this.profilesRepository.save({
+      ...updateProfileDto,
+      id, // Ensure the ID is passed to update the correct record
+    });
+
     return updatedProfile;
   }
 
