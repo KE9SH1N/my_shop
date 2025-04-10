@@ -4,6 +4,7 @@ import { APP_PIPE } from '@nestjs/core';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
+import { AnimalModule } from './animal/animal.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthMainModule } from './auth/authmain.module';
@@ -36,6 +37,7 @@ import { UsersMainModule } from './users/usersmian.module';
       rootPath: join(__dirname, '..', 'uploads'), // Serve static files from the 'uploads' directory
       serveRoot: '/uploads', // Optional: Define a custom URL prefix
     }),
+    AnimalModule,
   ],
   controllers: [AppController],
   providers: [
