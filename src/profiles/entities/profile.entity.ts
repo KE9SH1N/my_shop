@@ -34,7 +34,7 @@ export class Profile {
   email: string;
 
   @Column({ type: 'date', nullable: true })
-  date_of_birth?: Date;
+  date_of_birth: Date;
 
   @Column({ nullable: true })
   primary_phone_number: string;

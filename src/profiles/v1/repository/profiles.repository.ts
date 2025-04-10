@@ -30,12 +30,14 @@ export class ProfilesRepository extends Repository<Profile> {
   //find all profile
   async findAllProfile(paginationDto: PaginationDto) {
     const { page = 1, limit = 10 } = paginationDto;
+    const query = this.createQueryBuilder('profile');
 
-    const [data, total] = await this.findAndCount({
-      skip: (page - 1) * limit,
-      take: limit,
-      order: { created_at: 'DESC' }, // optional
-    });
+    const [data, total] = await query
+      .skip((page - 1) * limit)
+      .take(limit)
+      .orderBy('profile.created_at', 'DESC')
+      .getManyAndCount();
+
     const successMesg = 'All Profiles retrieved successfully';
 
     return paginateResponse(data, total, page, limit, successMesg);

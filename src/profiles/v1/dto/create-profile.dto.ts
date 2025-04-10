@@ -17,14 +17,14 @@ export class CreateProfileDto {
     message:
       'First name can only contain English alphabets (A-Z, a-z) with no spaces.',
   })
-  first_name: string;
+  first_name?: string;
 
   @IsString()
   @Matches(/^[A-Za-z]+$/, {
     message:
       'First name can only contain English alphabets (A-Z, a-z) with no spaces.',
   })
-  last_name: string;
+  last_name?: string;
 
   @IsOptional()
   @IsString()

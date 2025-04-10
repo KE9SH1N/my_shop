@@ -46,6 +46,7 @@ export class ProfilesController {
       totalPages: number;
     };
   }> {
+    // Convert camelCase to snake_case before passing to service
     return this.profilesService.findAllProfile(paginationDto);
   }
 
@@ -63,30 +64,6 @@ export class ProfilesController {
       data: profileDetailsById,
     };
   }
-
-  // @Patch(':id')
-  // @UseGuards(JwtAuthGuard)
-  // @Version('1')
-  // @UseInterceptors(FileInterceptor('profile_image'))
-  // async update(
-  //   @Param('id') id: string,
-  //   @Body() updateProfileDto: UpdateProfileDto,
-  //   @UploadedFile() profileImage: Express.Multer.File,
-  // ): Promise<{ statusCode: number; message: string; data: Profile }> {
-  //   const updatedProfileDetails = await this.profilesService.updateProfileById(
-  //     id,
-  //     updateProfileDto,
-  //   );
-  //   if (profileImage) {
-  //     updateProfileDto.profile_image = profileImage.filename;
-  //   }
-  //   updatedProfileDetails.profile_image = `http://localhost:3000/uploads/${profileImage.filename}`;
-  //   return {
-  //     statusCode: 200,
-  //     message: 'Profile updated successfully',
-  //     data: updatedProfileDetails,
-  //   };
-  // }
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard)
