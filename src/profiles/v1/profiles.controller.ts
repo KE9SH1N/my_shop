@@ -15,7 +15,6 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Auth } from 'src/auth/entities/auth.entity';
 import { JwtAuthGuard } from 'src/auth/util/jwt-auth.guard';
-import { PaginationDto } from 'src/common/shared/dto/pagination.dto';
 import { Profile } from '../entities/profile.entity';
 import { GetUser } from '../guards/get-user.decorator';
 import { CreateProfileDto } from './dto/create-profile.dto';
@@ -35,19 +34,17 @@ export class ProfilesController {
   @Get('/all')
   @UseGuards(JwtAuthGuard)
   @Version('1')
-  async findAllProfile(@Query() paginationDto: PaginationDto): Promise<{
-    statusCode: number;
-    message: string;
-    data: Profile[];
-    pagination: {
-      total_data: number;
-      page: number;
-      limit: number;
-      totalPages: number;
-    };
-  }> {
+  async findAllProfile(
+    @Query('first_name') first_name?: string,
+  ): Promise<{ statusCode: number; messages: string; data: Profile[] }> {
     // Convert camelCase to snake_case before passing to service
-    return this.profilesService.findAllProfile(paginationDto);
+    const allProfileData =
+      await this.profilesService.findAllProfile(first_name);
+    return {
+      statusCode: 200,
+      messages: 'retrieved all animal data',
+      data: allProfileData,
+    };
   }
 
   @Get(':id')

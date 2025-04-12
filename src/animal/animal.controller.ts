@@ -9,7 +9,9 @@ import {
   Query,
   Version,
 } from '@nestjs/common';
+import { PaginatedResponse } from 'src/common/shared/utils/pagination-response';
 import { AnimalService } from './animal.service';
+import { AnimalFilterDto } from './dto/animal-filter.dto';
 import { CreateAnimalDto } from './dto/create-animal.dto';
 import { UpdateAnimalDto } from './dto/update-animal.dto';
 import { Animal } from './entities/animal.entity';
@@ -33,17 +35,13 @@ export class AnimalController {
 
   @Get()
   @Version('1')
-  async findAll(@Query('name') name?: string): Promise<{
-    statusCode: number;
-    messages: string;
-    data: Animal[];
-  }> {
-    const allAnimal = await this.animalService.findAll(name);
-    return {
-      statusCode: 200,
-      messages: 'retrieved all animal data',
-      data: allAnimal,
-    };
+  async findAll(
+    @Query() animalFilterDto: AnimalFilterDto,
+    // @Query() paginationDto: PaginationDto,
+    // @Query('name') name?: string,
+  ): Promise<PaginatedResponse<Animal>> {
+    const allAnimal = await this.animalService.findAll(animalFilterDto);
+    return allAnimal;
   }
 
   @Get(':id')

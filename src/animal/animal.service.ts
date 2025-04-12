@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { PaginatedResponse } from 'src/common/shared/utils/pagination-response';
+import { AnimalFilterDto } from './dto/animal-filter.dto';
 import { CreateAnimalDto } from './dto/create-animal.dto';
 import { UpdateAnimalDto } from './dto/update-animal.dto';
 import { Animal } from './entities/animal.entity';
@@ -20,11 +22,27 @@ export class AnimalService {
     }
   }
 
-  async findAll(name?: string): Promise<Animal[]> {
-    const allAnimal = await this.animalRepository.findAllAnimals(name);
+  async findAll(
+    animalFilterDto: AnimalFilterDto,
+  ): Promise<PaginatedResponse<Animal>> {
+    const { page, limit, name } = animalFilterDto;
 
-    return allAnimal;
+    const { data, total } = await this.animalRepository.findAllAnimals(
+      { page, limit },
+      name,
+    );
+
+    return new PaginatedResponse<Animal>(data, total, page, limit);
   }
+
+  // async findAll(
+  //   animalFilterDto: AnimalFilterDto,
+  // ): Promise<PaginatedResponse<Animal>> {
+  //   const { data, total, page, limit } =
+  //     await this.animalRepository.findAllAnimals(animalFilterDto);
+
+  //   return new PaginatedResponse<Animal>(data, total, page, limit);
+  // }
 
   findOne(id: number) {
     return `This action returns a #${id} animal`;

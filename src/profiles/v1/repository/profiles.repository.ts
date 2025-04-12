@@ -1,6 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { PaginationDto } from 'src/common/shared/dto/pagination.dto';
-import { paginateResponse } from 'src/common/shared/utils/pagination-response';
 import { Profile } from 'src/profiles/entities/profile.entity';
 import { DataSource, Repository } from 'typeorm';
 import { CreateProfileDto } from '../dto/create-profile.dto';
@@ -28,19 +26,32 @@ export class ProfilesRepository extends Repository<Profile> {
   }
 
   //find all profile
-  async findAllProfile(paginationDto: PaginationDto) {
-    const { page = 1, limit = 10 } = paginationDto;
+  // async findAllProfile(paginationDto: PaginationDto) {
+  //   const { page = 1, limit = 10 } = paginationDto;
+  //   const query = this.createQueryBuilder('profile');
+
+  //   const [data, total] = await query
+  //     .skip((page - 1) * limit)
+  //     .take(limit)
+  //     .orderBy('profile.created_at', 'DESC')
+  //     .getManyAndCount();
+
+  //   const successMesg = 'All Profiles retrieved successfully';
+
+  //   return paginateResponse(data, total, page, limit, successMesg);
+  // }
+
+  async findAllProfile(first_name?: string): Promise<Profile[]> {
     const query = this.createQueryBuilder('profile');
 
-    const [data, total] = await query
-      .skip((page - 1) * limit)
-      .take(limit)
-      .orderBy('profile.created_at', 'DESC')
-      .getManyAndCount();
+    if (first_name) {
+      query.andWhere('profile.first_name ILIKE :first_name', {
+        first_name: `%${first_name}%`,
+      });
+    }
 
-    const successMesg = 'All Profiles retrieved successfully';
-
-    return paginateResponse(data, total, page, limit, successMesg);
+    const allProfile = await query.getMany();
+    return allProfile;
   }
 
   async updateProfileById(

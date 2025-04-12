@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Auth } from 'src/auth/entities/auth.entity';
-import { PaginationDto } from 'src/common/shared/dto/pagination.dto';
 import { Profile } from '../entities/profile.entity';
 import { CreateProfileDto } from './dto/create-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
@@ -25,18 +24,8 @@ export class ProfilesService {
     return this.profilesRepository.save(profile);
   }
 
-  async findAllProfile(paginationDto: PaginationDto): Promise<{
-    statusCode: number;
-    message: string;
-    data: Profile[];
-    pagination: {
-      total_data: number;
-      page: number;
-      limit: number;
-      totalPages: number;
-    };
-  }> {
-    return this.profilesRepository.findAllProfile(paginationDto);
+  async findAllProfile(first_name?: string): Promise<Profile[]> {
+    return this.profilesRepository.findAllProfile(first_name);
   }
 
   async findProfileById(id: string): Promise<Profile> {
